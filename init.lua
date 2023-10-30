@@ -19,6 +19,11 @@ vim.g.mapleader = ','               -- set the leader key to ','
 -- key map to clear search highlighting
 vim.keymap.set('n', '<Leader><Space>', ':nohlsearch<CR>')
 
+-- key map to manage buffers
+vim.keymap.set('n', '<Leader>n', ':bnext<CR>')
+vim.keymap.set('n', '<Leader>p', ':bprevious<CR>')
+vim.keymap.set('n', '<Leader>d', ':bdelete<CR>')
+
 
 -- bootstrap lazy.nvim plugin manager
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
