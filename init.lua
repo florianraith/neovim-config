@@ -13,16 +13,28 @@ vim.opt.clipboard = 'unnamedplus'   -- access system clipboard
 vim.opt.so = 7                      -- set scroll offset to 7
 vim.opt.showmode = false            -- disable mode display
 
-vim.g.mapleader = ','               -- set the leader key to ','
-
+vim.g.mapleader = ' '               -- set the leader key
 
 -- key map to clear search highlighting
-vim.keymap.set('n', '<Leader><Space>', ':nohlsearch<CR>')
+vim.keymap.set('n', '<leader><space>', ':nohlsearch<cr>')
+
+-- diagnostic keybindings
+vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
+vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
 
 -- key map to manage buffers
-vim.keymap.set('n', '<Leader>n', ':bnext<CR>')
-vim.keymap.set('n', '<Leader>p', ':bprevious<CR>')
-vim.keymap.set('n', '<Leader>d', ':bdelete<CR>')
+vim.keymap.set('n', '<leader>n', ':bnext<cr>')
+vim.keymap.set('n', '<leader>p', ':bprevious<cr>')
+vim.keymap.set('n', '<leader>d', ':bdelete<cr>')
+
+-- key maps during lsp session
+local on_attach = function(_, _)
+	vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
+	vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, {})
+	vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
+end
 
 
 -- bootstrap lazy.nvim plugin manager
@@ -72,23 +84,11 @@ require('lualine').setup {
 	},
 }
 
--- diagnostic keybindings
-vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
-vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
-
 -- setup lsp
 require('mason').setup()
 require('mason-lspconfig').setup({
 	ensure_installed = { 'lua_ls', 'hls' }
 })
-
-local on_attach = function(_, _)
-	vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
-	vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, {})
-	vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
-end
 
 local lspconfig = require('lspconfig')
 lspconfig.lua_ls.setup {
