@@ -40,20 +40,20 @@ end
 -- bootstrap lazy.nvim plugin manager
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system({
+  vim.fn.system {
     'git',
     'clone',
     '--filter=blob:none',
     'https://github.com/folke/lazy.nvim.git',
     '--branch=stable', -- latest stable release
     lazypath,
-  })
+  }
 end
 vim.opt.rtp:prepend(lazypath)
 
 
 -- setup plugins
-require('lazy').setup({
+require('lazy').setup {
 	'morhetz/gruvbox',
 	{ 'nvim-lualine/lualine.nvim', dependencies = { 'nvim-tree/nvim-web-devicons' } },
 	'sheerun/vim-polyglot',
@@ -63,14 +63,14 @@ require('lazy').setup({
 	'mfussenegger/nvim-lint',
 	'mhartington/formatter.nvim',
 	{ 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
-})
+}
 
 
 -- setup color theme
 vim.opt.termguicolors = true
 vim.opt.background = 'dark'
 vim.g.gruvbox_contrast_dark = 'hard'
-vim.cmd.colorscheme('gruvbox')
+vim.cmd.colorscheme 'gruvbox'
 
 
 -- lualine configuration
@@ -86,9 +86,9 @@ require('lualine').setup {
 
 -- setup lsp
 require('mason').setup()
-require('mason-lspconfig').setup({
+require('mason-lspconfig').setup {
 	ensure_installed = { 'lua_ls', 'hls' }
-})
+}
 
 local lspconfig = require('lspconfig')
 lspconfig.lua_ls.setup {
@@ -102,7 +102,7 @@ lspconfig.hls.setup {
 }
 
 -- setup treesitter
-require('nvim-treesitter.configs').setup({
+require('nvim-treesitter.configs').setup {
   ensure_installed = { 'haskell', 'javascript', 'c', 'lua', 'vim', 'vimdoc', 'query' },
   sync_install = false,
   auto_install = true,
@@ -110,4 +110,4 @@ require('nvim-treesitter.configs').setup({
     enable = true,
     additional_vim_regex_highlighting = false,
   },
-})
+}
