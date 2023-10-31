@@ -125,5 +125,21 @@ require("formatter").setup({
 		lua = {
 			require("formatter.filetypes.lua").stylua,
 		},
+		haskell = {
+			function()
+				return {
+					exe = "fourmolu",
+					args = {
+						"--stdin-input-file",
+						"asdf.hs",
+						"--indentation",
+						"2",
+						"--indent-wheres",
+						"true",
+					},
+					stdin = true,
+				}
+			end,
+		},
 	},
 })
