@@ -29,6 +29,9 @@ vim.keymap.set('n', '<leader>n', ':bnext<cr>')
 vim.keymap.set('n', '<leader>p', ':bprevious<cr>')
 vim.keymap.set('n', '<leader>d', ':bdelete<cr>')
 
+-- key map for formatting
+vim.keymap.set('n', '<leader>f', ':Format<cr>')
+
 -- key maps during lsp session
 local on_attach = function(_, _)
 	vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
@@ -63,6 +66,7 @@ require('lazy').setup {
 	'mfussenegger/nvim-lint',
 	'mhartington/formatter.nvim',
 	{ 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
+	'mhartington/formatter.nvim',
 }
 
 
@@ -117,4 +121,13 @@ require('nvim-treesitter.configs').setup {
     enable = true,
     additional_vim_regex_highlighting = false,
   },
+}
+
+-- setup formatter
+require('formatter').setup {
+	filetype = {
+		lua = {
+			require('formatter.filetypes.lua').stylua,
+		},
+	},
 }
