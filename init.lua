@@ -82,6 +82,13 @@ require('lualine').setup {
 		lualine_a = { 'buffers' },
 		lualine_z = { 'tabs' },
 	},
+	sections = {
+		lualine_b = { 'branch', 'diff' },
+		lualine_c = { 'diagnostics' },
+		lualine_x = { 'fileformat' },
+		lualine_y = { 'filetype' },
+		lualine_z = { 'location' },
+	},
 }
 
 -- setup lsp
