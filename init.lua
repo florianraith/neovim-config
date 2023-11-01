@@ -124,6 +124,20 @@ require("mason-lspconfig").setup({
   },
 })
 
+-- setup autocompletion
+local cmp = require("cmp")
+
+cmp.setup({
+  sources = {
+    { name = "nvim_lsp" },
+    { name = "nvim_lua" },
+  },
+  preselect = "item",
+  completion = {
+    completeopt = "menu,menuone,noinsert",
+  },
+})
+
 -- setup treesitter
 require("nvim-treesitter.configs").setup({
   ensure_installed = { "haskell", "javascript", "c", "cpp", "lua", "vim", "vimdoc", "query" },
