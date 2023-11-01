@@ -57,14 +57,14 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
   "morhetz/gruvbox",
   { "nvim-lualine/lualine.nvim", dependencies = { "nvim-tree/nvim-web-devicons" } },
-  "sheerun/vim-polyglot",
+  { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
+
+  -- lsp
   "williamboman/mason.nvim",
   "williamboman/mason-lspconfig.nvim",
   "neovim/nvim-lspconfig",
-  "mfussenegger/nvim-lint",
   "mhartington/formatter.nvim",
-  { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
-  "mhartington/formatter.nvim",
+
 })
 
 -- setup color theme
@@ -94,7 +94,7 @@ require("lualine").setup({
 -- setup lsp
 require("mason").setup()
 require("mason-lspconfig").setup({
-  ensure_installed = { "lua_ls", "hls" },
+  ensure_installed = { "lua_ls", "hls", "clangd" },
 })
 
 local lspconfig = require("lspconfig")
@@ -107,10 +107,13 @@ lspconfig.lua_ls.setup({
 lspconfig.hls.setup({
   on_attach = on_attach,
 })
+lspconfig.clangd.setup({
+  on_attach = on_attach,
+})
 
 -- setup treesitter
 require("nvim-treesitter.configs").setup({
-  ensure_installed = { "haskell", "javascript", "c", "lua", "vim", "vimdoc", "query" },
+  ensure_installed = { "haskell", "javascript", "c", "cpp", "lua", "vim", "vimdoc", "query" },
   sync_install = false,
   auto_install = true,
   highlight = {
