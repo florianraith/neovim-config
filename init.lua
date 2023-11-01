@@ -55,16 +55,25 @@ vim.opt.rtp:prepend(lazypath)
 
 -- setup plugins
 require("lazy").setup({
-  "morhetz/gruvbox",
+  { "morhetz/gruvbox" },
   { "nvim-lualine/lualine.nvim", dependencies = { "nvim-tree/nvim-web-devicons" } },
   { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
 
   -- lsp
-  "williamboman/mason.nvim",
-  "williamboman/mason-lspconfig.nvim",
-  "neovim/nvim-lspconfig",
-  "mhartington/formatter.nvim",
+  { "williamboman/mason.nvim" },
+  { "williamboman/mason-lspconfig.nvim" },
+  { "VonHeikemen/lsp-zero.nvim", branch = "v3.x" },
+  { "neovim/nvim-lspconfig" },
+  { "mhartington/formatter.nvim" },
 
+  -- autocompletion
+  { "hrsh7th/nvim-cmp" },
+  { "hrsh7th/cmp-buffer" },
+  { "hrsh7th/cmp-path" },
+  { "saadparwaiz1/cmp_luasnip" },
+  { "hrsh7th/cmp-nvim-lsp" },
+  { "hrsh7th/cmp-nvim-lua" },
+  { "L3MON4D3/LuaSnip" },
 })
 
 -- setup color theme
@@ -92,23 +101,27 @@ require("lualine").setup({
 })
 
 -- setup lsp
+local lsp = require("lsp-zero")
+lsp.on_attach = on_attach
+
+lsp.set_sign_icons({
+  error = "󰅚", -- x000f015a
+  warn = "󰀪", -- x000f002a
+  info = "󰋽", -- x000f02fd
+  hint = "󰌶", -- x000f0336
+})
+
+local function lua()
+  require("lspconfig").lua_ls.setup(lsp.nvim_lua_ls())
+end
+
 require("mason").setup()
 require("mason-lspconfig").setup({
   ensure_installed = { "lua_ls", "hls", "clangd" },
-})
-
-local lspconfig = require("lspconfig")
-lspconfig.lua_ls.setup({
-  on_attach = on_attach,
-  settings = {
-    Lua = { diagnostics = { globals = { "vim" } } },
+  handlers = {
+    lsp.default_setup,
+    lua_ls = lua,
   },
-})
-lspconfig.hls.setup({
-  on_attach = on_attach,
-})
-lspconfig.clangd.setup({
-  on_attach = on_attach,
 })
 
 -- setup treesitter
