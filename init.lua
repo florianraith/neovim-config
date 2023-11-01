@@ -33,10 +33,14 @@ vim.keymap.set("n", "<leader>d", ":bdelete<cr>")
 vim.keymap.set("n", "<leader>f", ":Format<cr>")
 
 -- key maps during lsp session
-local on_attach = function(_, _)
-  vim.keymap.set("n", "gd", vim.lsp.buf.definition, {})
-  vim.keymap.set("n", "gi", vim.lsp.buf.implementation, {})
-  vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
+local on_attach = function(_, bufnr)
+  local opts = {buffer = bufnr, remap = false}
+  vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+  vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+  vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+  vim.keymap.set("n", "<leader>rr", vim.lsp.buf.references, opts)
+  vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+  vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
 end
 
 -- bootstrap lazy.nvim plugin manager
@@ -102,7 +106,7 @@ require("lualine").setup({
 
 -- setup lsp
 local lsp = require("lsp-zero")
-lsp.on_attach = on_attach
+lsp.on_attach(on_attach)
 
 lsp.set_sign_icons({
   error = "󰅚", -- x000f015a
@@ -111,13 +115,15 @@ lsp.set_sign_icons({
   hint = "󰌶", -- x000f0336
 })
 
+lsp.setup()
+
 local function lua()
   require("lspconfig").lua_ls.setup(lsp.nvim_lua_ls())
 end
 
 require("mason").setup()
 require("mason-lspconfig").setup({
-  ensure_installed = { "lua_ls", "hls", "clangd" },
+  ensure_installed = { "lua_ls", "clangd" },
   handlers = {
     lsp.default_setup,
     lua_ls = lua,
