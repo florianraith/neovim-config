@@ -34,7 +34,7 @@ vim.keymap.set("n", "<leader>f", ":Format<cr>")
 
 -- key maps during lsp session
 local on_attach = function(_, bufnr)
-  local opts = {buffer = bufnr, remap = false}
+  local opts = { buffer = bufnr, remap = false }
   vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
   vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
   vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
