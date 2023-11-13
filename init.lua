@@ -86,6 +86,8 @@ vim.opt.background = "dark"
 vim.g.gruvbox_contrast_dark = "hard"
 vim.cmd.colorscheme("gruvbox")
 
+vim.api.nvim_set_hl(0, "SignColumn", { bg = "none" })
+
 -- lualine configuration
 require("lualine").setup({
   options = {
