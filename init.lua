@@ -125,7 +125,11 @@ end
 
 require("mason").setup()
 require("mason-lspconfig").setup({
-  ensure_installed = { "lua_ls", "clangd" },
+  ensure_installed = {
+    "lua_ls",
+    "clangd",
+    "tsserver",
+  },
   handlers = {
     lsp.default_setup,
     lua_ls = lua,
@@ -148,7 +152,17 @@ cmp.setup({
 
 -- setup treesitter
 require("nvim-treesitter.configs").setup({
-  ensure_installed = { "haskell", "javascript", "c", "cpp", "lua", "vim", "vimdoc", "query" },
+  ensure_installed = {
+    "haskell",
+    "javascript",
+    "typescript",
+    "c",
+    "cpp",
+    "lua",
+    "vim",
+    "vimdoc",
+    "query",
+  },
   sync_install = false,
   auto_install = true,
   highlight = {
