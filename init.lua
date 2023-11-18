@@ -172,6 +172,17 @@ require("nvim-treesitter.configs").setup({
 })
 
 -- setup formatter
+local function prettierd_formatter()
+  local prettierd_default_config = vim.fn.expand('~/.config/nvim/.prettierrc.json')
+  local command = string.format("PRETTIERD_DEFAULT_CONFIG=%s prettierd", prettierd_default_config)
+
+  return {
+    exe = command,
+    args = { vim.api.nvim_buf_get_name(0) },
+    stdin = true,
+  }
+end
+
 require("formatter").setup({
   filetype = {
     lua = {
@@ -206,5 +217,17 @@ require("formatter").setup({
         }
       end,
     },
+    css = { prettierd_formatter },
+    graphql = { prettierd_formatter },
+    html = { prettierd_formatter },
+    javascript = { prettierd_formatter },
+    javascriptreact = { prettierd_formatter },
+    json = { prettierd_formatter },
+    less = { prettierd_formatter },
+    markdown = { prettierd_formatter },
+    scss = { prettierd_formatter },
+    typescript = { prettierd_formatter },
+    typescriptreact = { prettierd_formatter },
+    yaml = { prettierd_formatter },
   },
 })
