@@ -62,6 +62,7 @@ require("lazy").setup({
   { "morhetz/gruvbox" },
   { "nvim-lualine/lualine.nvim", dependencies = { "nvim-tree/nvim-web-devicons" } },
   { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
+  { "nvim-telescope/telescope.nvim", tag = "0.1.4", dependencies = { "nvim-lua/plenary.nvim" } },
 
   -- lsp
   { "williamboman/mason.nvim" },
@@ -136,6 +137,13 @@ require("mason-lspconfig").setup({
   },
 })
 
+-- setup telescope
+local builtin = require('telescope.builtin')
+vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
+vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
+vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
+vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
+
 -- setup autocompletion
 local cmp = require("cmp")
 
@@ -173,7 +181,7 @@ require("nvim-treesitter.configs").setup({
 
 -- setup formatter
 local function prettierd_formatter()
-  local prettierd_default_config = vim.fn.expand('~/.config/nvim/.prettierrc.json')
+  local prettierd_default_config = vim.fn.expand("~/.config/nvim/.prettierrc.json")
   local command = string.format("PRETTIERD_DEFAULT_CONFIG=%s prettierd", prettierd_default_config)
 
   return {
