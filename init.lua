@@ -63,6 +63,7 @@ require("lazy").setup({
   { "nvim-lualine/lualine.nvim", dependencies = { "nvim-tree/nvim-web-devicons" } },
   { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
   { "nvim-telescope/telescope.nvim", tag = "0.1.4", dependencies = { "nvim-lua/plenary.nvim" } },
+  { "onsails/lspkind.nvim" },
 
   -- lsp
   { "williamboman/mason.nvim" },
@@ -155,6 +156,20 @@ cmp.setup({
   preselect = "item",
   completion = {
     completeopt = "menu,menuone,noinsert",
+  },
+  mapping = cmp.mapping.preset.insert({
+    ["<C-;>"] = cmp.mapping.complete(),
+  }),
+  formatting = {
+    format = require("lspkind").cmp_format({
+      menu = {
+        buffer = "[Buffer]",
+        nvim_lsp = "[LSP]",
+        luasnip = "[LuaSnip]",
+        nvim_lua = "[Lua]",
+        latex_symbols = "[Latex]",
+      },
+    }),
   },
 })
 
