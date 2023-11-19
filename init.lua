@@ -30,7 +30,7 @@ vim.keymap.set("n", "<leader>bp", ":bprevious<cr>")
 vim.keymap.set("n", "<leader>bd", ":bdelete<cr>")
 
 -- key map for formatting
-vim.keymap.set("n", "<leader>f", ":Format<cr>")
+vim.keymap.set("n", "<leader>p", ":Format<cr>")
 
 -- key maps during lsp session
 local on_attach = function(_, bufnr)
