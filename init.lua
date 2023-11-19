@@ -32,6 +32,18 @@ vim.keymap.set("n", "<leader>bd", ":bdelete<cr>")
 -- key map for formatting
 vim.keymap.set("n", "<leader>p", ":Format<cr>")
 
+vim.keymap.set("n", "<leader>rp", function()
+  local pos = vim.api.nvim_win_get_cursor(0)
+  vim.cmd("%!prettier %")
+  local lines = vim.api.nvim_buf_line_count(0)
+
+  if pos[1] > lines then
+    pos[1] = lines
+  end
+
+  vim.api.nvim_win_set_cursor(0, pos)
+end)
+
 -- key maps during lsp session
 local on_attach = function(_, bufnr)
   local opts = { buffer = bufnr, remap = false }
