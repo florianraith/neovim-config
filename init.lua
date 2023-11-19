@@ -25,9 +25,9 @@ vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist)
 
 -- key map to manage buffers
-vim.keymap.set("n", "<leader>n", ":bnext<cr>")
-vim.keymap.set("n", "<leader>p", ":bprevious<cr>")
-vim.keymap.set("n", "<leader>d", ":bdelete<cr>")
+vim.keymap.set("n", "<leader>bn", ":bnext<cr>")
+vim.keymap.set("n", "<leader>bp", ":bprevious<cr>")
+vim.keymap.set("n", "<leader>bd", ":bdelete<cr>")
 
 -- key map for formatting
 vim.keymap.set("n", "<leader>f", ":Format<cr>")
