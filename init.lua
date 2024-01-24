@@ -83,6 +83,7 @@ require("lazy").setup({
   { "VonHeikemen/lsp-zero.nvim", branch = "v3.x" },
   { "neovim/nvim-lspconfig" },
   { "mhartington/formatter.nvim" },
+  { "tikhomirov/vim-glsl" },
 
   -- autocompletion
   { "hrsh7th/nvim-cmp" },
