@@ -1,4 +1,5 @@
 vim.opt.number = true -- enable line numbers
+vim.wo.relativenumber = true -- enable relative line numbers
 vim.opt.mouse = "a" -- enable mouse support in all modes
 vim.opt.ignorecase = true -- ignore case in search patterns
 vim.opt.smartcase = true -- respect case with uppercase letters
