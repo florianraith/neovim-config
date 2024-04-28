@@ -45,6 +45,15 @@ vim.keymap.set("n", "<leader>rp", function()
   vim.api.nvim_win_set_cursor(0, pos)
 end)
 
+-- Highlight when yanking (copying) text
+vim.api.nvim_create_autocmd('TextYankPost', {
+  desc = 'Highlight when yanking (copying) text',
+  group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
+  callback = function()
+    vim.highlight.on_yank()
+  end,
+})
+
 -- key maps during lsp session
 local on_attach = function(_, bufnr)
   local opts = { buffer = bufnr, remap = false }
