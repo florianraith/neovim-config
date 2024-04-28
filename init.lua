@@ -31,19 +31,8 @@ vim.keymap.set("n", "<leader>bp", ":bprevious<cr>")
 vim.keymap.set("n", "<leader>bd", ":bdelete<cr>")
 
 -- key map for formatting
-vim.keymap.set("n", "<leader>p", ":Format<cr>")
-
-vim.keymap.set("n", "<leader>rp", function()
-  local pos = vim.api.nvim_win_get_cursor(0)
-  vim.cmd("%!prettier %")
-  local lines = vim.api.nvim_buf_line_count(0)
-
-  if pos[1] > lines then
-    pos[1] = lines
-  end
-
-  vim.api.nvim_win_set_cursor(0, pos)
-end)
+vim.keymap.set("n", "<leader>p", vim.lsp.buf.format)
+vim.keymap.set("n", "<leader>rp", ":silent %!prettier --stdin-filepath %<cr>")
 
 -- Highlight when yanking (copying) text
 vim.api.nvim_create_autocmd("TextYankPost", {
@@ -95,7 +84,6 @@ require("lazy").setup({
   { "williamboman/mason-lspconfig.nvim" },
   { "VonHeikemen/lsp-zero.nvim", branch = "v3.x" },
   { "neovim/nvim-lspconfig" },
-  { "mhartington/formatter.nvim" },
   { "tikhomirov/vim-glsl" },
 
   -- autocompletion
@@ -250,66 +238,5 @@ require("nvim-treesitter.configs").setup({
   highlight = {
     enable = true,
     additional_vim_regex_highlighting = false,
-  },
-})
-
--- setup formatter
-local function prettierd_formatter()
-  local prettierd_default_config = vim.fn.expand("~/.config/nvim/.prettierrc.json")
-  local command = string.format("PRETTIERD_DEFAULT_CONFIG=%s prettierd", prettierd_default_config)
-
-  return {
-    exe = command,
-    args = { vim.api.nvim_buf_get_name(0) },
-    stdin = true,
-  }
-end
-
-require("formatter").setup({
-  filetype = {
-    lua = {
-      function()
-        return {
-          exe = "stylua",
-          args = {
-            "--indent-type",
-            "Spaces",
-            "--indent-width",
-            "2",
-            "--",
-            "-",
-          },
-          stdin = true,
-        }
-      end,
-    },
-    haskell = {
-      function()
-        return {
-          exe = "fourmolu",
-          args = {
-            "--stdin-input-file",
-            "asdf.hs",
-            "--indentation",
-            "2",
-            "--indent-wheres",
-            "true",
-          },
-          stdin = true,
-        }
-      end,
-    },
-    css = { prettierd_formatter },
-    graphql = { prettierd_formatter },
-    html = { prettierd_formatter },
-    javascript = { prettierd_formatter },
-    javascriptreact = { prettierd_formatter },
-    json = { prettierd_formatter },
-    less = { prettierd_formatter },
-    markdown = { prettierd_formatter },
-    scss = { prettierd_formatter },
-    typescript = { prettierd_formatter },
-    typescriptreact = { prettierd_formatter },
-    yaml = { prettierd_formatter },
   },
 })
