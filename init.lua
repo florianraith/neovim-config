@@ -85,6 +85,7 @@ require("lazy").setup({
   { "VonHeikemen/lsp-zero.nvim", branch = "v3.x" },
   { "neovim/nvim-lspconfig" },
   { "tikhomirov/vim-glsl" },
+  { "nvimtools/none-ls.nvim" },
 
   -- autocompletion
   { "hrsh7th/nvim-cmp" },
@@ -97,7 +98,6 @@ require("lazy").setup({
 })
 
 -- setup color theme
-
 require("tokyonight").setup({
   style = "storm",
   transparent = true,
@@ -158,6 +158,16 @@ require("mason-lspconfig").setup({
     lsp.default_setup,
     lua_ls = lua,
   },
+})
+
+-- setup null ls
+local null_ls = require("null-ls")
+
+null_ls.setup({
+    sources = {
+        null_ls.builtins.formatting.stylua,
+        null_ls.builtins.completion.spell,
+    },
 })
 
 -- setup telescope
