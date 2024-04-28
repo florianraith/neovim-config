@@ -72,7 +72,7 @@ vim.opt.rtp:prepend(lazypath)
 
 -- setup plugins
 require("lazy").setup({
-  { "morhetz/gruvbox" },
+  { "folke/tokyonight.nvim", lazy = false, priority = 1000, opts = {} },
   { "nvim-lualine/lualine.nvim", dependencies = { "nvim-tree/nvim-web-devicons" } },
   { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
   { "nvim-telescope/telescope.nvim", tag = "0.1.4", dependencies = { "nvim-lua/plenary.nvim" } },
@@ -97,17 +97,19 @@ require("lazy").setup({
 })
 
 -- setup color theme
-vim.opt.termguicolors = true
-vim.opt.background = "dark"
-vim.g.gruvbox_contrast_dark = "hard"
-vim.cmd.colorscheme("gruvbox")
 
+require("tokyonight").setup({
+  style = "storm",
+  transparent = true,
+})
+
+vim.cmd([[colorscheme tokyonight]])
 vim.api.nvim_set_hl(0, "SignColumn", { bg = "none" })
 
 -- lualine configuration
 require("lualine").setup({
   options = {
-    theme = "gruvbox",
+    theme = "tokyonight",
   },
   tabline = {
     lualine_a = { "buffers" },
