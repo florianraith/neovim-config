@@ -78,6 +78,8 @@ require("lazy").setup({
   { "nvim-telescope/telescope.nvim", tag = "0.1.4", dependencies = { "nvim-lua/plenary.nvim" } },
   { "onsails/lspkind.nvim" },
   { "numToStr/Comment.nvim", opts = {}, lazy = false },
+  { "tpope/vim-surround" },
+  { "windwp/nvim-ts-autotag" },
 
   -- lsp
   { "williamboman/mason.nvim" },
@@ -109,6 +111,9 @@ vim.api.nvim_set_hl(0, "SignColumn", { bg = "none" })
 
 -- setup comment
 require("Comment").setup()
+
+-- setup ts autotag
+require("nvim-ts-autotag").setup()
 
 -- lualine configuration
 require("lualine").setup({
