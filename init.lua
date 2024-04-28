@@ -77,6 +77,7 @@ require("lazy").setup({
   { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
   { "nvim-telescope/telescope.nvim", tag = "0.1.4", dependencies = { "nvim-lua/plenary.nvim" } },
   { "onsails/lspkind.nvim" },
+  { "numToStr/Comment.nvim", opts = {}, lazy = false },
 
   -- lsp
   { "williamboman/mason.nvim" },
@@ -105,6 +106,9 @@ require("tokyonight").setup({
 
 vim.cmd([[colorscheme tokyonight]])
 vim.api.nvim_set_hl(0, "SignColumn", { bg = "none" })
+
+-- setup comment
+require("Comment").setup()
 
 -- lualine configuration
 require("lualine").setup({
