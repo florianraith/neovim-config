@@ -13,6 +13,7 @@ vim.opt.shiftwidth = 2 -- set indentation level to 2 spaces
 vim.opt.clipboard = 'unnamedplus' -- access system clipboard
 vim.opt.so = 7 -- set scroll offset to 7
 vim.opt.showmode = false -- disable mode display
+vim.opt.iskeyword:append("-") -- include - in keywords
 
 vim.g.mapleader = ' ' -- set the leader key
 
