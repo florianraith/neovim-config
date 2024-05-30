@@ -10,10 +10,11 @@ vim.opt.breakindent = true -- wrap long lines at indentation
 vim.opt.expandtab = true -- convert tabs to spaces
 vim.opt.tabstop = 2 -- set tab width to 2 spaces
 vim.opt.shiftwidth = 2 -- set indentation level to 2 spaces
+vim.opt.smartindent = true
 vim.opt.clipboard = 'unnamedplus' -- access system clipboard
 vim.opt.so = 7 -- set scroll offset to 7
 vim.opt.showmode = false -- disable mode display
-vim.opt.iskeyword:append("-") -- include - in keywords
+vim.opt.iskeyword:append '-' -- include - in keywords
 
 vim.g.mapleader = ' ' -- set the leader key
 
@@ -250,5 +251,8 @@ require('nvim-treesitter.configs').setup {
   highlight = {
     enable = true,
     additional_vim_regex_highlighting = false,
+  },
+  indent = {
+    enable = true,
   },
 }
