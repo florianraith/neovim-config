@@ -1,3 +1,4 @@
+-- Options {{{
 vim.opt.number = true -- enable line numbers
 vim.wo.relativenumber = true -- enable relative line numbers
 vim.opt.mouse = 'a' -- enable mouse support in all modes
@@ -15,9 +16,11 @@ vim.opt.clipboard = 'unnamedplus' -- access system clipboard
 vim.opt.so = 7 -- set scroll offset to 7
 vim.opt.showmode = false -- disable mode display
 vim.opt.iskeyword:append '-' -- include - in keywords
-
+vim.opt.foldmethod = 'marker'
 vim.g.mapleader = ' ' -- set the leader key
+-- }}}
 
+-- Keymaps {{{
 -- key map to clear search highlighting
 vim.keymap.set('n', '<leader><space>', ':nohlsearch<cr>')
 
@@ -57,8 +60,10 @@ local on_attach = function(_, bufnr)
   vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
   vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
 end
+-- }}}
 
--- bootstrap lazy.nvim plugin manager
+-- LazyVIM {{{
+-- bootstrap lazy.nvim plugin manager 
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system {
@@ -100,8 +105,9 @@ require('lazy').setup {
   { 'hrsh7th/cmp-nvim-lua' },
   { 'L3MON4D3/LuaSnip' },
 }
+-- }}}
 
--- setup color theme
+-- Setup color theme {{{
 require('tokyonight').setup {
   style = 'storm',
   transparent = true,
@@ -109,14 +115,17 @@ require('tokyonight').setup {
 
 vim.cmd [[colorscheme tokyonight]]
 vim.api.nvim_set_hl(0, 'SignColumn', { bg = 'none' })
+--- }}}
 
--- setup comment
+-- Setup comment {{{
 require('Comment').setup()
+-- }}}
 
--- setup ts autotag
+-- Setup ts autotag {{{
 require('nvim-ts-autotag').setup()
+-- }}}
 
--- lualine configuration
+-- Setup Lualine {{{
 require('lualine').setup {
   options = {
     theme = 'tokyonight',
@@ -133,8 +142,9 @@ require('lualine').setup {
     lualine_z = { 'location' },
   },
 }
+-- }}}
 
--- setup lsp
+-- Setup lsp {{{
 local lsp = require 'lsp-zero'
 lsp.on_attach(on_attach)
 
@@ -156,15 +166,15 @@ require('mason-lspconfig').setup {
   ensure_installed = {
     'lua_ls',
     'clangd',
-    'tsserver',
   },
   handlers = {
     lsp.default_setup,
     lua_ls = lua,
   },
 }
+-- }}}
 
--- inject the formatters installed through mason into conform
+-- Setup formatting {{{
 local function contains(array, value)
   for _, v in ipairs(array) do
     if v == value then
@@ -174,6 +184,7 @@ local function contains(array, value)
   return false
 end
 
+-- inject the formatters installed through mason into conform
 local packages = require('mason-registry').get_installed_packages()
 local formatters_by_ft = {}
 
@@ -196,12 +207,12 @@ for _, formatters in pairs(formatters_by_ft) do
   end
 end
 
--- setup formatting
 require('conform').setup {
   formatters_by_ft = formatters_by_ft,
 }
+-- }}}
 
--- setup telescope
+-- Setup telescope {{{
 local builtin = require 'telescope.builtin'
 vim.keymap.set('n', '<leader>ff', builtin.git_files, {})
 vim.keymap.set('n', '<leader>fa', builtin.find_files, {})
@@ -233,8 +244,9 @@ require('telescope').setup {
     },
   },
 }
+--- }}}
 
--- setup autocompletion
+-- Setup autocompletion {{{
 local cmp = require 'cmp'
 
 cmp.setup {
@@ -261,8 +273,9 @@ cmp.setup {
     },
   },
 }
+-- }}}
 
--- setup treesitter
+-- Setup treesitter {{{
 require('nvim-treesitter.configs').setup {
   ensure_installed = {
     'haskell',
@@ -285,3 +298,4 @@ require('nvim-treesitter.configs').setup {
     enable = true,
   },
 }
+-- }}}
