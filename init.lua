@@ -33,7 +33,9 @@ vim.keymap.set('n', '<leader>bp', ':bprevious<cr>')
 vim.keymap.set('n', '<leader>bd', ':bdelete<cr>')
 
 -- key map for formatting
-vim.keymap.set('n', '<leader>p', vim.lsp.buf.format)
+vim.keymap.set('n', '<leader>p', function()
+  require('conform').format { timeout_ms = 3000 }
+end)
 vim.keymap.set('n', '<leader>rp', ':silent %!prettier --stdin-filepath %<cr>')
 
 -- Highlight when yanking (copying) text
@@ -87,7 +89,7 @@ require('lazy').setup {
   { 'VonHeikemen/lsp-zero.nvim', branch = 'v3.x' },
   { 'neovim/nvim-lspconfig' },
   { 'tikhomirov/vim-glsl' },
-  { 'nvimtools/none-ls.nvim' },
+  { 'stevearc/conform.nvim' },
 
   -- autocompletion
   { 'hrsh7th/nvim-cmp' },
@@ -162,14 +164,41 @@ require('mason-lspconfig').setup {
   },
 }
 
--- setup null ls
-local null_ls = require 'null-ls'
+-- inject the formatters installed through mason into conform
+local function contains(array, value)
+  for _, v in ipairs(array) do
+    if v == value then
+      return true
+    end
+  end
+  return false
+end
 
-null_ls.setup {
-  sources = {
-    null_ls.builtins.formatting.stylua,
-    null_ls.builtins.completion.spell,
-  },
+local packages = require('mason-registry').get_installed_packages()
+local formatters_by_ft = {}
+
+for _, package in ipairs(packages) do
+  if contains(package.spec.categories, 'Formatter') then
+    for _, lang in ipairs(package.spec.languages) do
+      local lang_lower = string.lower(lang)
+      if not formatters_by_ft[lang_lower] then
+        formatters_by_ft[lang_lower] = {}
+      end
+
+      table.insert(formatters_by_ft[lang_lower], package.name)
+    end
+  end
+end
+
+for _, formatters in pairs(formatters_by_ft) do
+  if #formatters > 1 then
+    formatters['stop_after_first'] = true
+  end
+end
+
+-- setup formatting
+require('conform').setup {
+  formatters_by_ft = formatters_by_ft,
 }
 
 -- setup telescope
