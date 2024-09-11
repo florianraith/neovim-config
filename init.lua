@@ -41,6 +41,11 @@ vim.keymap.set('n', '<leader>p', function()
 end)
 vim.keymap.set('n', '<leader>rp', ':silent %!prettier --stdin-filepath %<cr>')
 
+-- key map fro neo tree
+vim.keymap.set('n', '<leader>l', function()
+  require('neo-tree.command').execute({ toggle = true, dir = vim.uv.cwd() })
+end)
+
 -- Highlight when yanking (copying) text
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',
@@ -63,7 +68,7 @@ end
 -- }}}
 
 -- LazyVIM {{{
--- bootstrap lazy.nvim plugin manager 
+-- bootstrap lazy.nvim plugin manager
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system {
@@ -87,6 +92,11 @@ require('lazy').setup {
   { 'numToStr/Comment.nvim', opts = {}, lazy = false },
   { 'tpope/vim-surround' },
   { 'windwp/nvim-ts-autotag' },
+  {
+    'nvim-neo-tree/neo-tree.nvim',
+    branch = 'v3.x',
+    dependencies = { 'nvim-lua/plenary.nvim', 'nvim-tree/nvim-web-devicons', 'MunifTanjim/nui.nvim' },
+  },
 
   -- lsp
   { 'williamboman/mason.nvim' },
