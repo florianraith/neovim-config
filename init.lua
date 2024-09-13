@@ -339,13 +339,3 @@ require('copilot').setup {
 }
 
 -- }}}
-
--- Setup neo-tree {{{
-local neo_tree = require 'neo-tree'
-neo_tree.setup {
-  disable_default_keybindings = true,
-  auto_open = false,
-  auto_close = false,
-}
-
--- }}}
