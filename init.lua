@@ -36,8 +36,8 @@ vim.keymap.set('n', '<leader>bp', ':bprevious<cr>')
 vim.keymap.set('n', '<leader>bd', ':bdelete<cr>')
 
 -- remap j,k to gj,gk
-vim.keymap.set('n', 'j', 'gj')
-vim.keymap.set('n', 'k', 'gk')
+vim.keymap.set('n', '<C-j>', 'gj')
+vim.keymap.set('n', '<C-k>', 'gk')
 
 -- key map for formatting
 vim.keymap.set('n', '<leader>p', function()
