@@ -43,7 +43,7 @@ vim.keymap.set('n', '<leader>rp', ':silent %!prettier --stdin-filepath %<cr>')
 
 -- key map fro neo tree
 vim.keymap.set('n', '<leader>l', function()
-  require('neo-tree.command').execute({ toggle = true, dir = vim.uv.cwd() })
+  require('neo-tree.command').execute { toggle = true, dir = vim.uv.cwd() }
 end)
 
 -- Highlight when yanking (copying) text
@@ -97,6 +97,8 @@ require('lazy').setup {
     branch = 'v3.x',
     dependencies = { 'nvim-lua/plenary.nvim', 'nvim-tree/nvim-web-devicons', 'MunifTanjim/nui.nvim' },
   },
+  { 'zbirenbaum/copilot.lua' },
+  { 'AndreM222/copilot-lualine' },
 
   -- lsp
   { 'williamboman/mason.nvim' },
@@ -147,7 +149,23 @@ require('lualine').setup {
   sections = {
     lualine_b = { 'branch', 'diff' },
     lualine_c = { 'diagnostics' },
-    lualine_x = { 'fileformat' },
+    lualine_x = {
+      {
+        'copilot',
+        symbols = {
+          status = {
+            icons = {
+              enabled = '',
+              sleep = '',
+              disabled = '',
+              warning = '',
+              unknown = '',
+            },
+          },
+        },
+      },
+      'fileformat',
+    },
     lualine_y = { 'filetype' },
     lualine_z = { 'location' },
   },
@@ -308,4 +326,26 @@ require('nvim-treesitter.configs').setup {
     enable = true,
   },
 }
+-- }}}
+
+-- Setup copilot {{{
+
+require('copilot').setup {
+  filetypes = {
+    gitcommit = true,
+    markdown = true,
+    yaml = true,
+  },
+}
+
+-- }}}
+
+-- Setup neo-tree {{{
+local neo_tree = require 'neo-tree'
+neo_tree.setup {
+  disable_default_keybindings = true,
+  auto_open = false,
+  auto_close = false,
+}
+
 -- }}}
