@@ -17,17 +17,14 @@ local function generate_lorem(words)
 
   local full_text = table.concat(lorem_text, ' ')
   local word_list = {}
-  for word in full_text:gmatch '%S+' do
-    table.insert(word_list, word)
-  end
 
-  while #word_list < tonumber(words) do
+  while #word_list < words do
     for word in full_text:gmatch '%S+' do
       table.insert(word_list, word)
     end
   end
 
-  local result = table.concat(vim.list_slice(word_list, 1, tonumber(words)), ' ')
+  local result = table.concat(vim.list_slice(word_list, 1, words), ' ')
 
   if not result:match '%.%s*$' then
     result = result .. '.'
@@ -39,8 +36,7 @@ end
 return {
   s({ trig = 'lorem(%d+)', regTrig = true }, {
     f(function(_, snip)
-      local word_count = snip.captures[1]
-      return generate_lorem(word_count)
+      return generate_lorem(tonumber(snip.captures[1]))
     end, {}),
   }),
 }
