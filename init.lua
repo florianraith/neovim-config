@@ -64,6 +64,17 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+-- Map refactorings
+local function inline_var()
+  vim.cmd 'normal! gd'
+  vim.cmd 'Refactor inline_var'
+end
+
+vim.keymap.set('n', '<leader>xi', inline_var, { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>xr', function()
+  require('refactoring').select_refactor()
+end, { noremap = true, silent = true })
+
 -- key maps during lsp session
 local on_attach = function(_, bufnr)
   local opts = { buffer = bufnr, remap = false }
@@ -109,6 +120,16 @@ require('lazy').setup {
   },
   { 'zbirenbaum/copilot.lua' },
   { 'AndreM222/copilot-lualine' },
+  {
+    'ThePrimeagen/refactoring.nvim',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-treesitter/nvim-treesitter',
+    },
+    config = function()
+      require('refactoring').setup()
+    end,
+  },
 
   -- lsp
   { 'williamboman/mason.nvim' },
