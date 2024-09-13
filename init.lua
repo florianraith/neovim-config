@@ -35,6 +35,11 @@ vim.keymap.set('n', '<leader>bn', ':bnext<cr>')
 vim.keymap.set('n', '<leader>bp', ':bprevious<cr>')
 vim.keymap.set('n', '<leader>bd', ':bdelete<cr>')
 
+-- use tab to expand snippets
+vim.keymap.set('i', '<Tab>', function()
+  require('luasnip').expand()
+end, { silent = true })
+
 -- remap j,k to gj,gk
 vim.keymap.set('n', '<C-j>', 'gj')
 vim.keymap.set('n', '<C-k>', 'gk')
@@ -92,6 +97,7 @@ require('lazy').setup {
   { 'nvim-lualine/lualine.nvim', dependencies = { 'nvim-tree/nvim-web-devicons' } },
   { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
   { 'nvim-telescope/telescope.nvim', tag = '0.1.4', dependencies = { 'nvim-lua/plenary.nvim' } },
+  { 'benfowler/telescope-luasnip.nvim' },
   { 'onsails/lspkind.nvim' },
   { 'numToStr/Comment.nvim', opts = {}, lazy = false },
   { 'tpope/vim-surround' },
@@ -276,22 +282,59 @@ require('telescope').setup {
     },
   },
 }
+
+require('telescope').load_extension 'luasnip'
+
 --- }}}
 
 -- Setup autocompletion {{{
 local cmp = require 'cmp'
+local luasnip = require 'luasnip'
 
 cmp.setup {
   sources = {
     { name = 'nvim_lsp' },
     { name = 'nvim_lua' },
+    { name = 'luasnip' },
   },
   preselect = 'item',
   completion = {
     completeopt = 'menu,menuone,noinsert',
   },
-  mapping = cmp.mapping.preset.insert {
-    ['<C-;>'] = cmp.mapping.complete(),
+  mapping = {
+    ['<CR>'] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        if luasnip.expandable() then
+          luasnip.expand()
+        else
+          cmp.confirm {
+            select = true,
+          }
+        end
+      else
+        fallback()
+      end
+    end),
+
+    ['<Tab>'] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_next_item()
+      elseif luasnip.locally_jumpable(1) then
+        luasnip.jump(1)
+      else
+        fallback()
+      end
+    end, { 'i', 's' }),
+
+    ['<S-Tab>'] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_prev_item()
+      elseif luasnip.locally_jumpable(-1) then
+        luasnip.jump(-1)
+      else
+        fallback()
+      end
+    end, { 'i', 's' }),
   },
   formatting = {
     format = require('lspkind').cmp_format {
@@ -305,6 +348,9 @@ cmp.setup {
     },
   },
 }
+
+require('luasnip.loaders.from_lua').load { paths = '~/.config/nvim/snippets' }
+
 -- }}}
 
 -- Setup treesitter {{{
