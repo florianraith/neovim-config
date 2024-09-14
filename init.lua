@@ -111,7 +111,7 @@ require('lazy').setup {
   { 'folke/tokyonight.nvim', lazy = false, priority = 1000, opts = {} },
   { 'nvim-lualine/lualine.nvim', dependencies = { 'nvim-tree/nvim-web-devicons' } },
   { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
-  { 'nvim-telescope/telescope.nvim', tag = '0.1.4', dependencies = { 'nvim-lua/plenary.nvim' } },
+  { 'nvim-telescope/telescope.nvim', tag = '0.1.8', dependencies = { 'nvim-lua/plenary.nvim' } },
   { 'benfowler/telescope-luasnip.nvim' },
   { 'onsails/lspkind.nvim' },
   { 'numToStr/Comment.nvim', opts = {}, lazy = false },
@@ -276,12 +276,34 @@ require('conform').setup {
 -- }}}
 
 -- Setup telescope {{{
+
 local builtin = require 'telescope.builtin'
 vim.keymap.set('n', '<leader>ff', builtin.git_files, {})
 vim.keymap.set('n', '<leader>fa', builtin.find_files, {})
 vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
 vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
 vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
+
+local previewers = require 'telescope.previewers'
+local previewers_utils = require 'telescope.previewers.utils'
+
+local max_size = 500000
+local truncate_large_files = function(filepath, bufnr, opts)
+  opts = opts or {}
+
+  filepath = vim.fn.expand(filepath)
+  vim.loop.fs_stat(filepath, function(_, stat)
+    if not stat then
+      return
+    end
+    if stat.size > max_size then
+      local cmd = { 'head', '-c', max_size, filepath }
+      previewers_utils.job_maker(cmd, bufnr, opts)
+    else
+      previewers.buffer_previewer_maker(filepath, bufnr, opts)
+    end
+  end)
+end
 
 require('telescope').setup {
   defaults = {
@@ -299,8 +321,8 @@ require('telescope').setup {
       'node_modules',
       'vendor',
     },
+    buffer_previewer_maker = truncate_large_files,
   },
-
   pickers = {
     find_files = {
       hidden = true,
