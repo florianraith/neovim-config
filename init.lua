@@ -40,7 +40,7 @@ vim.keymap.set('i', '<Tab>', function()
   if require('luasnip').expand_or_jumpable() then
     require('luasnip').expand_or_jump()
   else
-    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Tab>", true, false, true), "n", true)
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Tab>', true, false, true), 'n', true)
   end
 end, { silent = true })
 
@@ -410,6 +410,9 @@ require('copilot').setup {
     gitcommit = true,
     markdown = true,
     yaml = true,
+  },
+  suggestion = {
+    auto_trigger = true,
   },
 }
 
