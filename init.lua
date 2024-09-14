@@ -305,6 +305,8 @@ local truncate_large_files = function(filepath, bufnr, opts)
   end)
 end
 
+local actions = require 'telescope.actions'
+
 require('telescope').setup {
   defaults = {
     vimgrep_arguments = {
@@ -322,6 +324,12 @@ require('telescope').setup {
       'vendor',
     },
     buffer_previewer_maker = truncate_large_files,
+    mappings = {
+      i = {
+        ['<C-j>'] = actions.move_selection_next,
+        ['<C-k>'] = actions.move_selection_previous,
+      },
+    },
   },
   pickers = {
     find_files = {
