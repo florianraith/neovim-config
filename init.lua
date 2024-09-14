@@ -37,7 +37,11 @@ vim.keymap.set('n', '<leader>bd', ':bdelete<cr>')
 
 -- use tab to expand snippets
 vim.keymap.set('i', '<Tab>', function()
-  require('luasnip').expand()
+  if require('luasnip').expand_or_jumpable() then
+    require('luasnip').expand_or_jump()
+  else
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Tab>", true, false, true), "n", true)
+  end
 end, { silent = true })
 
 -- remap j,k to gj,gk
