@@ -287,7 +287,7 @@ vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
 local previewers = require 'telescope.previewers'
 local previewers_utils = require 'telescope.previewers.utils'
 
-local max_size = 500000
+local max_size = 10000
 local truncate_large_files = function(filepath, bufnr, opts)
   opts = opts or {}
 
