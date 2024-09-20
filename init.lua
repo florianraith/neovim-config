@@ -17,6 +17,7 @@ vim.opt.so = 7 -- set scroll offset to 7
 vim.opt.showmode = false -- disable mode display
 vim.opt.iskeyword:append '-' -- include - in keywords
 vim.opt.foldmethod = 'marker'
+vim.opt.cursorline = true -- highlight current line
 vim.g.mapleader = ' ' -- set the leader key
 -- }}}
 
