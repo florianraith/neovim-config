@@ -178,13 +178,9 @@ require('lualine').setup {
   options = {
     theme = 'tokyonight',
   },
-  tabline = {
-    lualine_a = { 'buffers' },
-    lualine_z = { 'tabs' },
-  },
   sections = {
     lualine_b = { 'branch', 'diff' },
-    lualine_c = { 'diagnostics' },
+    lualine_c = { { 'filename', path = 1 }, 'diagnostics' },
     lualine_x = {
       {
         'copilot',
@@ -200,7 +196,7 @@ require('lualine').setup {
           },
         },
       },
-      'fileformat',
+      'tabs',
     },
     lualine_y = { 'filetype' },
     lualine_z = { 'location' },
