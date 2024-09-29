@@ -18,6 +18,8 @@ vim.opt.showmode = false -- disable mode display
 vim.opt.iskeyword:append '-' -- include - in keywords
 vim.opt.foldmethod = 'marker'
 vim.opt.cursorline = true -- highlight current line
+vim.opt.splitright = true -- open new split to the right
+vim.opt.splitbelow = true -- open new split below
 vim.g.mapleader = ' ' -- set the leader key
 -- }}}
 
