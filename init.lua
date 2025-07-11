@@ -219,19 +219,13 @@ lsp.set_sign_icons {
 
 lsp.setup()
 
-local function lua()
-  require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
-end
+vim.lsp.config('lua_ls', lsp.nvim_lua_ls())
 
 require('mason').setup()
 require('mason-lspconfig').setup {
   ensure_installed = {
     'lua_ls',
     'clangd',
-  },
-  handlers = {
-    lsp.default_setup,
-    lua_ls = lua,
   },
 }
 -- }}}
