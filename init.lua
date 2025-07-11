@@ -38,15 +38,6 @@ vim.keymap.set('n', '<leader>bn', ':bnext<cr>')
 vim.keymap.set('n', '<leader>bp', ':bprevious<cr>')
 vim.keymap.set('n', '<leader>bd', ':bdelete<cr>')
 
--- use tab to expand snippets
-vim.keymap.set('i', '<Tab>', function()
-  if require('luasnip').expand_or_jumpable() then
-    require('luasnip').expand_or_jump()
-  else
-    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Tab>', true, false, true), 'n', true)
-  end
-end, { silent = true })
-
 -- remap j,k to gj,gk
 vim.keymap.set('n', '<C-j>', 'gj')
 vim.keymap.set('n', '<C-k>', 'gk')
@@ -358,30 +349,26 @@ cmp.setup {
         if luasnip.expandable() then
           luasnip.expand()
         else
-          cmp.confirm {
-            select = true,
-          }
+          cmp.confirm { behavior = cmp.ConfirmBehavior.Insert, select = true }
         end
       else
         fallback()
       end
     end),
-
     ['<Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
+      if luasnip.expand_or_jumpable() then
+        luasnip.expand_or_jump()
+      elseif cmp.visible() then
         cmp.select_next_item()
-      elseif luasnip.locally_jumpable(1) then
-        luasnip.jump(1)
       else
         fallback()
       end
     end, { 'i', 's' }),
-
     ['<S-Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_prev_item()
-      elseif luasnip.locally_jumpable(-1) then
+      if luasnip.jumpable(-1) then
         luasnip.jump(-1)
+      elseif cmp.visible() then
+        cmp.select_prev_item()
       else
         fallback()
       end
@@ -400,6 +387,7 @@ cmp.setup {
   },
 }
 
+require('luasnip.loaders.from_vscode').lazy_load { paths = '~/.config/nvim/snippets' }
 require('luasnip.loaders.from_lua').load { paths = '~/.config/nvim/snippets' }
 
 -- }}}
