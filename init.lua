@@ -281,6 +281,9 @@ vim.keymap.set('n', '<leader>ff', builtin.git_files, {})
 vim.keymap.set('n', '<leader>fa', builtin.find_files, {})
 vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
 vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
+vim.keymap.set('n', '<leader>;', function()
+  builtin.buffers { initial_mode = 'normal', sort_mru = true, sort_lastused = true }
+end, {})
 vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
 
 local previewers = require 'telescope.previewers'
