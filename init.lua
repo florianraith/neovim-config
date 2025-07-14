@@ -20,6 +20,7 @@ vim.opt.foldmethod = 'marker'
 vim.opt.cursorline = true -- highlight current line
 vim.opt.splitright = true -- open new split to the right
 vim.opt.splitbelow = true -- open new split below
+vim.opt.signcolumn = 'yes' -- always show sign column
 vim.g.mapleader = ' ' -- set the leader key
 -- }}}
 
@@ -102,7 +103,16 @@ vim.opt.rtp:prepend(lazypath)
 
 -- setup plugins
 require('lazy').setup {
+  -- colorschemes
   { 'folke/tokyonight.nvim', lazy = false, priority = 1000, opts = {} },
+  { 'rose-pine/neovim', priority = 1000, name = 'rose-pine' },
+  { 'sainnhe/gruvbox-material', priority = 1000 },
+  { 'catppuccin/nvim', name = 'catppuccin', priority = 1000 },
+  { 'rebelot/kanagawa.nvim', priority = 1000 },
+  { 'ellisonleao/gruvbox.nvim', priority = 1000, config = true },
+  { 'marko-cerovac/material.nvim' },
+
+  -- functionality
   { 'nvim-lualine/lualine.nvim', dependencies = { 'nvim-tree/nvim-web-devicons' } },
   { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
   { 'nvim-telescope/telescope.nvim', tag = '0.1.8', dependencies = { 'nvim-lua/plenary.nvim' } },
@@ -148,13 +158,23 @@ require('lazy').setup {
 }
 -- }}}
 
--- Setup color theme {{{
-require('tokyonight').setup {
-  style = 'storm',
-  transparent = true,
-}
+vim.cmd [[colorscheme rose-pine]]
 
-vim.cmd [[colorscheme tokyonight]]
+-- Clears the background color so that the terminal background shows through
+local function clear_background()
+  vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
+  vim.api.nvim_set_hl(0, 'NormalNC', { bg = 'none' })
+  vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none' })
+  vim.api.nvim_set_hl(0, 'EndOfBuffer', { bg = 'none' })
+end
+
+clear_background()
+vim.api.nvim_create_augroup('TransparentBg', {})
+vim.api.nvim_create_autocmd('ColorScheme', {
+  group = 'TransparentBg',
+  callback = clear_background,
+})
+
 vim.api.nvim_set_hl(0, 'SignColumn', { bg = 'none' })
 --- }}}
 
@@ -168,9 +188,6 @@ require('nvim-ts-autotag').setup()
 
 -- Setup Lualine {{{
 require('lualine').setup {
-  options = {
-    theme = 'tokyonight',
-  },
   sections = {
     lualine_b = { 'branch', 'diff' },
     lualine_c = { { 'filename', path = 1 }, 'diagnostics' },
@@ -231,6 +248,10 @@ local function contains(array, value)
   return false
 end
 
+local priorities = {
+  biome = 1000,
+}
+
 -- inject the formatters installed through mason into conform
 local packages = require('mason-registry').get_installed_packages()
 local formatters_by_ft = {}
@@ -248,11 +269,25 @@ for _, package in ipairs(packages) do
   end
 end
 
-for _, formatters in pairs(formatters_by_ft) do
-  if #formatters > 1 then
-    formatters['stop_after_first'] = true
+-- sort each list by our priorities (default 0), highest first
+for ft, list in pairs(formatters_by_ft) do
+  table.sort(list, function(a, b)
+    local pa = priorities[a] or 0
+    local pb = priorities[b] or 0
+    return pa > pb
+  end)
+
+  -- if there's more than one, stop on the first
+  if #list > 1 then
+    list.stop_after_first = true
   end
 end
+
+-- for _, formatters in pairs(formatters_by_ft) do
+--   if #formatters > 1 then
+--     formatters['stop_after_first'] = true
+--   end
+-- end
 
 require('conform').setup {
   formatters_by_ft = formatters_by_ft,
@@ -309,6 +344,9 @@ require('telescope').setup {
     file_ignore_patterns = {
       'node_modules',
       'vendor',
+      '.git',
+      '.idea',
+      '.vscode',
     },
     buffer_previewer_maker = truncate_large_files,
     mappings = {
@@ -356,8 +394,12 @@ cmp.setup {
       end
     end),
     ['<Tab>'] = cmp.mapping(function(fallback)
-      if luasnip.expand_or_jumpable() then
-        luasnip.expand_or_jump()
+      if luasnip.expand_or_locally_jumpable() then
+        if luasnip.locally_jumpable(1) then
+          luasnip.jump(1)
+        else
+          luasnip.expand()
+        end
       elseif cmp.visible() then
         cmp.select_next_item()
       else
@@ -385,6 +427,11 @@ cmp.setup {
       },
     },
   },
+}
+
+luasnip.config.set_config {
+  region_check_events = 'InsertEnter',
+  delete_check_events = 'TextChanged,InsertLeave',
 }
 
 require('luasnip.loaders.from_vscode').lazy_load { paths = '~/.config/nvim/snippets' }
