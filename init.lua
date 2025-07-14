@@ -341,13 +341,6 @@ require('telescope').setup {
       '--column',
       '--smart-case',
     },
-    file_ignore_patterns = {
-      'node_modules',
-      'vendor',
-      '.git',
-      '.idea',
-      '.vscode',
-    },
     buffer_previewer_maker = truncate_large_files,
     mappings = {
       i = {
