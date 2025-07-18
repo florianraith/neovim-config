@@ -158,6 +158,7 @@ require('lazy').setup {
 }
 -- }}}
 
+-- Setup colorscheme {{{
 vim.cmd [[colorscheme rose-pine]]
 
 -- Clears the background color so that the terminal background shows through
