@@ -84,6 +84,14 @@ local on_attach = function(_, bufnr)
   vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
   vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
 end
+
+-- make
+vim.keymap.set('n', '<leader>m', function()
+  vim.cmd 'botright 15split'
+  vim.cmd 'terminal make'
+  vim.cmd 'startinsert'
+end, { desc = 'Run make in terminal' })
+
 -- }}}
 
 -- LazyVIM {{{
