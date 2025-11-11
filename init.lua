@@ -30,8 +30,12 @@ vim.keymap.set('n', '<leader><space>', ':nohlsearch<cr>')
 
 -- diagnostic keybindings
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
+vim.keymap.set('n', '[d', function()
+  vim.diagnostic.jump { count = -1, float = true }
+end)
+vim.keymap.set('n', ']d', function()
+  vim.diagnostic.jump { count = 1, float = true }
+end)
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
 
 -- key map to manage buffers
@@ -279,7 +283,7 @@ for _, package in ipairs(packages) do
 end
 
 -- sort each list by our priorities (default 0), highest first
-for ft, list in pairs(formatters_by_ft) do
+for _, list in pairs(formatters_by_ft) do
   table.sort(list, function(a, b)
     local pa = priorities[a] or 0
     local pb = priorities[b] or 0
@@ -291,12 +295,6 @@ for ft, list in pairs(formatters_by_ft) do
     list.stop_after_first = true
   end
 end
-
--- for _, formatters in pairs(formatters_by_ft) do
---   if #formatters > 1 then
---     formatters['stop_after_first'] = true
---   end
--- end
 
 require('conform').setup {
   formatters_by_ft = formatters_by_ft,
