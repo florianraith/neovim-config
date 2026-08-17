@@ -1,6 +1,6 @@
 return {
   'zbirenbaum/copilot.lua',
-  lazy = false,
+  event = 'InsertEnter',
   opts = {
     filetypes = {
       gitcommit = true,

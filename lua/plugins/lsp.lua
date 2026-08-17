@@ -1,12 +1,18 @@
 return {
-  { 'williamboman/mason.nvim', lazy = false },
-  { 'williamboman/mason-lspconfig.nvim', lazy = false },
-  { 'neovim/nvim-lspconfig', lazy = false },
+  -- mason.setup runs on load rather than from lsp-zero's config, because
+  -- conform.nvim also reads the mason registry and either one may load first.
+  {
+    'williamboman/mason.nvim',
+    cmd = { 'Mason', 'MasonInstall', 'MasonUninstall', 'MasonUninstallAll', 'MasonLog', 'MasonUpdate' },
+    opts = {},
+  },
+  { 'williamboman/mason-lspconfig.nvim', lazy = true },
+  { 'neovim/nvim-lspconfig', lazy = true },
 
   {
     'VonHeikemen/lsp-zero.nvim',
     branch = 'v3.x',
-    lazy = false,
+    event = { 'BufReadPre', 'BufNewFile' },
     dependencies = {
       'neovim/nvim-lspconfig',
       'williamboman/mason.nvim',
@@ -37,7 +43,6 @@ return {
 
       vim.lsp.config('lua_ls', lsp.nvim_lua_ls())
 
-      require('mason').setup()
       require('mason-lspconfig').setup {
         ensure_installed = {
           'lua_ls',

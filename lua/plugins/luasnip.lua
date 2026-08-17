@@ -1,6 +1,7 @@
+-- Loaded on demand by nvim-cmp and telescope, which both declare it a dependency.
 return {
   'L3MON4D3/LuaSnip',
-  lazy = false,
+  lazy = true,
   config = function()
     local luasnip = require 'luasnip'
 

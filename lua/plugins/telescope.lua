@@ -1,23 +1,57 @@
 return {
   'nvim-telescope/telescope.nvim',
   tag = '0.1.8',
-  lazy = false,
+  cmd = 'Telescope',
   dependencies = {
     'nvim-lua/plenary.nvim',
     'L3MON4D3/LuaSnip',
     'benfowler/telescope-luasnip.nvim',
   },
+  keys = {
+    {
+      '<leader>ff',
+      function()
+        require('telescope.builtin').git_files()
+      end,
+      desc = 'Find git files',
+    },
+    {
+      '<leader>fa',
+      function()
+        require('telescope.builtin').find_files()
+      end,
+      desc = 'Find all files',
+    },
+    {
+      '<leader>fg',
+      function()
+        require('telescope.builtin').live_grep()
+      end,
+      desc = 'Live grep',
+    },
+    {
+      '<leader>fb',
+      function()
+        require('telescope.builtin').buffers()
+      end,
+      desc = 'Find buffers',
+    },
+    {
+      '<leader>;',
+      function()
+        require('telescope.builtin').buffers { initial_mode = 'normal', sort_mru = true, sort_lastused = true }
+      end,
+      desc = 'Recent buffers',
+    },
+    {
+      '<leader>fh',
+      function()
+        require('telescope.builtin').help_tags()
+      end,
+      desc = 'Find help tags',
+    },
+  },
   config = function()
-    local builtin = require 'telescope.builtin'
-    vim.keymap.set('n', '<leader>ff', builtin.git_files, {})
-    vim.keymap.set('n', '<leader>fa', builtin.find_files, {})
-    vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
-    vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
-    vim.keymap.set('n', '<leader>;', function()
-      builtin.buffers { initial_mode = 'normal', sort_mru = true, sort_lastused = true }
-    end, {})
-    vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
-
     local previewers = require 'telescope.previewers'
     local previewers_utils = require 'telescope.previewers.utils'
 

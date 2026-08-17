@@ -1,10 +1,21 @@
 -- Derives conform's formatters_by_ft from whatever mason has installed, rather
 -- than maintaining the mapping by hand. Depends on mason.nvim being loaded so
--- the registry is readable.
+-- the registry is readable; because conform itself is lazy, that registry scan
+-- is deferred to the first format or write instead of running at startup.
 return {
   'stevearc/conform.nvim',
-  lazy = false,
+  event = 'BufWritePre',
+  cmd = 'ConformInfo',
   dependencies = { 'williamboman/mason.nvim' },
+  keys = {
+    {
+      '<leader>p',
+      function()
+        require('conform').format { timeout_ms = 3000 }
+      end,
+      desc = 'Format buffer',
+    },
+  },
   config = function()
     local function contains(array, value)
       for _, v in ipairs(array) do
@@ -53,9 +64,5 @@ return {
     require('conform').setup {
       formatters_by_ft = formatters_by_ft,
     }
-
-    vim.keymap.set('n', '<leader>p', function()
-      require('conform').format { timeout_ms = 3000 }
-    end)
   end,
 }
