@@ -1,0 +1,234 @@
+# Neovim configuration
+
+Personal Neovim config. Requires **Neovim 0.12+**.
+
+Leader key is `<Space>`.
+
+## Layout
+
+```
+init.lua                  leader, options/keymaps, lazy.nvim bootstrap
+lua/core/options.lua      editor options
+lua/core/keymaps.lua      global keymaps, yank highlight autocmd
+lua/user/claude_grammar.lua   the <leader>gg grammar fix job
+lua/plugins/*.lua         one spec file per plugin or domain
+snippets/                 LuaSnip snippets (vscode and lua format)
+stylua.toml               formatting rules for this config
+lazy-lock.json            pinned plugin revisions
+```
+
+Every file in `lua/plugins/` returns a lazy.nvim spec and is picked up automatically by `{ import = 'plugins' }`.
+
+## Keybindings
+
+### General
+
+| Key | Action |
+| --- | --- |
+| `<leader><space>` | Clear search highlighting |
+| `<C-j>` / `<C-k>` | Move down/up by display line (`gj` / `gk`), useful with wrapped lines |
+| `<leader>bn` / `<leader>bp` | Next / previous buffer |
+| `<leader>bd` | Delete buffer |
+| `<leader>m` | Run `make` in a 15 line terminal split |
+| `<leader>gg` | Fix grammar of the whole buffer with Claude, result appended below |
+
+### Diagnostics
+
+| Key | Action |
+| --- | --- |
+| `<leader>e` | Show diagnostic in a float |
+| `[d` / `]d` | Jump to previous / next diagnostic, opening a float |
+| `<leader>q` | Send buffer diagnostics to the location list |
+
+### LSP (active only while a server is attached)
+
+| Key | Action |
+| --- | --- |
+| `gd` | Go to definition |
+| `gi` | Go to implementation |
+| `K` | Hover documentation |
+| `<leader>rn` | Rename symbol |
+| `<leader>rr` | List references |
+| `<leader>ca` | Code action |
+
+### Find (Telescope)
+
+| Key | Action |
+| --- | --- |
+| `<leader>ff` | Git files |
+| `<leader>fa` | All files, hidden files included |
+| `<leader>fg` | Live grep |
+| `<leader>fb` | Open buffers |
+| `<leader>;` | Recent buffers, opens in normal mode sorted by most recent use |
+| `<leader>fh` | Help tags |
+| `<C-j>` / `<C-k>` | Next / previous entry while typing in a picker |
+
+### Files and formatting
+
+| Key | Action |
+| --- | --- |
+| `<leader>l` | Toggle neo-tree at the current working directory |
+| `<leader>p` | Format buffer with conform (3 second timeout) |
+| `<leader>rp` | Format buffer by piping it through `prettier`, bypassing conform |
+
+### Completion and snippets (insert mode)
+
+| Key | Action |
+| --- | --- |
+| `<Tab>` | Jump to next snippet placeholder, expand a snippet, otherwise next completion item |
+| `<S-Tab>` | Jump to previous snippet placeholder, otherwise previous completion item |
+| `<CR>` | Expand snippet if expandable, otherwise confirm the selected completion |
+
+### Provided by Neovim itself
+
+`gc` and `gcc` (comment toggle) are builtin since 0.10, so no commenting plugin is installed. Blockwise `gb` and `gbc` are **not** available.
+
+## Plugins
+
+### Plugin manager
+
+| Plugin | Why |
+| --- | --- |
+| `folke/lazy.nvim` | Plugin manager. Bootstrapped by `init.lua`, then loads every spec in `lua/plugins/`. |
+
+### Colorschemes
+
+| Plugin | Why |
+| --- | --- |
+| `rose-pine/neovim` | The active theme. Loads eagerly with `priority = 1000` so it wins the load order. |
+| `folke/tokyonight.nvim`, `sainnhe/gruvbox-material`, `catppuccin/nvim`, `rebelot/kanagawa.nvim`, `ellisonleao/gruvbox.nvim`, `marko-cerovac/material.nvim` | Alternatives kept installed but lazy. They load only when `:colorscheme <name>` asks for them. |
+
+### LSP
+
+| Plugin | Why |
+| --- | --- |
+| `mason-org/mason.nvim` | Installs language servers, formatters and linters into `~/.local/share/nvim/mason`. |
+| `mason-org/mason-lspconfig.nvim` | Bridges mason to `vim.lsp.enable()`, so every installed server is enabled automatically. |
+| `neovim/nvim-lspconfig` | Supplies per server defaults (commands, root markers, settings) as `lsp/*.lua` files. Carries this config's LSP setup. |
+
+There is no lsp-zero. Server enabling, keymaps, sign icons and per server settings all use the native Neovim 0.11+ API.
+
+### Completion and snippets
+
+| Plugin | Why |
+| --- | --- |
+| `hrsh7th/nvim-cmp` | Completion engine. |
+| `hrsh7th/cmp-nvim-lsp` | LSP completion source. |
+| `hrsh7th/cmp-nvim-lua` | Neovim Lua API completion source. |
+| `saadparwaiz1/cmp_luasnip` | Snippet completion source. |
+| `onsails/lspkind.nvim` | Icons and source labels in the completion menu. |
+| `L3MON4D3/LuaSnip` | Snippet engine, loads the `snippets/` directory. |
+
+### Syntax and formatting
+
+| Plugin | Why |
+| --- | --- |
+| `nvim-treesitter/nvim-treesitter` (branch `main`) | Parser installation and queries. Drives highlighting and indentation. |
+| `windwp/nvim-ts-autotag` | Auto closes and renames HTML/JSX tags. |
+| `stevearc/conform.nvim` | Formatting, wired to whatever mason has installed. |
+
+### Navigation
+
+| Plugin | Why |
+| --- | --- |
+| `nvim-telescope/telescope.nvim` | Fuzzy finder for files, grep, buffers and help. |
+| `benfowler/telescope-luasnip.nvim` | Browse available snippets through Telescope. |
+| `nvim-neo-tree/neo-tree.nvim` | File tree sidebar. |
+| `nvim-lua/plenary.nvim`, `MunifTanjim/nui.nvim` | Library dependencies of the two above. |
+
+### UI
+
+| Plugin | Why |
+| --- | --- |
+| `nvim-lualine/lualine.nvim` | Statusline. |
+| `AndreM222/copilot-lualine` | Copilot status indicator in the statusline. |
+| `nvim-tree/nvim-web-devicons` | File type icons. |
+
+### Editing and AI
+
+| Plugin | Why |
+| --- | --- |
+| `tpope/vim-surround` | Add, change and delete surrounding quotes, brackets and tags. |
+| `zbirenbaum/copilot.lua` | GitHub Copilot inline suggestions. |
+
+## Configuration notes
+
+### Loading strategy
+
+Everything is lazy loaded except the colorscheme and treesitter, both of which have to be present for the first rendered frame. Triggers are:
+
+| Trigger | Plugins |
+| --- | --- |
+| `VeryLazy` | lualine, vim-surround |
+| `InsertEnter` | nvim-cmp, copilot.lua, nvim-ts-autotag |
+| `BufReadPre` / `BufNewFile` | nvim-lspconfig and the mason stack |
+| `BufWritePre` | conform.nvim |
+| Keys or commands | telescope, neo-tree |
+| Dependency only | LuaSnip, plenary, nui, devicons, cmp sources |
+
+### treesitter
+
+Pinned to the `main` branch. The `master` branch is frozen and its query directives rely on a compatibility shim that Neovim 0.12 removed, which crashes highlighting on any file containing injections (PHP, Markdown, Telescope previews).
+
+Consequences of that branch:
+
+* It cannot be lazy loaded, so it is `lazy = false`.
+* It enables nothing by itself. Highlighting and indentation are turned on per buffer by a `FileType` autocmd, guarded by `pcall` so filetypes without a parser fall back to regex syntax and the builtin indent script.
+* There is no `auto_install`, so the parser list is declared explicitly. Parsers already present are skipped without touching the network.
+* `jsonc` has no parser on this branch, so it is registered to the `json` one.
+
+Parsers install to `~/.local/share/nvim/site/parser`.
+
+### conform
+
+`formatters_by_ft` is not maintained by hand. It is derived at load time by scanning the mason registry for packages in the `Formatter` category and mapping them onto the languages they declare. Where a filetype ends up with several formatters, `stop_after_first` is set and `biome` is given priority over the others.
+
+Because conform itself is lazy, that registry scan is deferred to the first write or format rather than running at startup.
+
+### LSP
+
+`mason.setup` runs from mason's own spec rather than from a consumer's config, because conform also reads the mason registry and either plugin may load first.
+
+`ensure_installed` covers only `lua_ls` and `clangd`. Everything else currently installed was added by hand through `:Mason` and is not reproducible from this config.
+
+`lua_ls` gets the Neovim runtime path and library injected so `vim` resolves and config files are understood. Those settings merge on top of the defaults nvim-lspconfig ships.
+
+Diagnostic sign icons are set through `vim.diagnostic.config`.
+
+### Telescope
+
+* Previews of files over 10 KB are truncated with `head`, keeping the preview responsive on large files.
+* `find_files` includes hidden files.
+* ripgrep runs with `-L` so symlinks are followed, and `--smart-case`.
+
+### Colorscheme transparency
+
+The background is stripped from `Normal`, `NormalNC`, `EndOfBuffer`, `SignColumn`, `NormalFloat` and `FloatBorder` so the terminal background shows through.
+
+Two details matter here:
+
+1. `nvim_set_hl` **replaces** a highlight rather than merging into it, so each group's existing attributes are read first and only the background is removed. Setting `{ bg = 'none' }` directly would also discard the foreground, which makes body text fall back to the terminal's colour and turns the `~` end of buffer markers bright in themes that deliberately hide them.
+2. Because floats are transparent too, `winborder = 'single'` is what separates a float from the content behind it. This matters most for one line floats such as diagnostics.
+
+The whole thing runs from a `ColorScheme` autocmd, so it survives switching themes and works for all seven installed colorschemes rather than hardcoding rose-pine values.
+
+### Completion behaviour
+
+`<Tab>` and `<S-Tab>` are snippet aware first and completion aware second, so jumping between placeholders takes precedence over cycling the completion menu. `<CR>` expands a snippet when one is expandable, otherwise it confirms the highlighted item. `noinsert` is set so nothing is written into the buffer until confirmed.
+
+### Claude grammar fix
+
+`<leader>gg` writes the buffer to a temp file, pipes it through `claude -p` with a Haiku model, and appends the corrected text below the original rather than replacing it. A spinner renders as virtual text below the last line while the job runs. Requires the `claude` CLI on `PATH`.
+
+## Maintenance
+
+| Command | Purpose |
+| --- | --- |
+| `:Lazy sync` | Install, update and clean plugins, then update `lazy-lock.json` |
+| `:Lazy clean` | Remove plugins no longer in any spec |
+| `:Mason` | Install or remove language servers and formatters |
+| `:TSUpdate` | Update treesitter parsers |
+| `:ConformInfo` | Show which formatters resolve for the current buffer |
+| `:checkhealth` | Diagnose a broken setup |
+
+External tools expected on `PATH`: `git`, `rg`, `curl`, `tar`, a C compiler, `tree-sitter` (0.26.1+, installed via a package manager rather than npm), and `claude` for the grammar keymap.
