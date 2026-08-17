@@ -73,6 +73,27 @@ return {
         },
       })
 
+      -- laravel/lsp, installed with `composer global require laravel/lsp`.
+      -- Not a mason package, so it needs enabling by hand.
+      local laravel_lsp = vim.fn.exepath 'laravel-lsp'
+      if laravel_lsp == '' then
+        laravel_lsp = vim.fn.expand '~/.composer/vendor/bin/laravel-lsp'
+      end
+
+      if vim.fn.executable(laravel_lsp) == 1 then
+        vim.lsp.config('laravel_lsp', {
+          cmd = { laravel_lsp },
+          filetypes = { 'php', 'blade' },
+          root_dir = function(bufnr, on_dir)
+            local root = vim.fs.root(bufnr, 'artisan')
+            if root then
+              on_dir(root)
+            end
+          end,
+        })
+        vim.lsp.enable 'laravel_lsp'
+      end
+
       -- must come after vim.lsp.config: this is what calls vim.lsp.enable()
       require('mason-lspconfig').setup {
         ensure_installed = {

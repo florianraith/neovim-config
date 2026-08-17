@@ -30,6 +30,11 @@ vim.keymap.set('n', '<leader>gg', function()
   require('user.claude_grammar').fix_buffer()
 end, { desc = 'Fix grammar with Claude' })
 
+-- generate laravel ide-helper files
+vim.keymap.set('n', '<leader>ih', function()
+  require('user.ide_helper').generate()
+end, { desc = 'Generate Laravel IDE helper files' })
+
 -- make
 vim.keymap.set('n', '<leader>m', function()
   vim.cmd 'botright 15split'
