@@ -216,6 +216,26 @@ The whole thing runs from a `ColorScheme` autocmd, so it survives switching them
 
 `<Tab>` and `<S-Tab>` are snippet aware first and completion aware second, so jumping between placeholders takes precedence over cycling the completion menu. `<CR>` expands a snippet when one is expandable, otherwise it confirms the highlighted item. `noinsert` is set so nothing is written into the buffer until confirmed.
 
+### Snippets
+
+Loaded from `snippets/` by LuaSnip, in both VSCode JSON and Lua format. Expand with `<Tab>`, browse everything available with `:Telescope luasnip`.
+
+#### `lorem<N>`
+
+A custom snippet, available in every filetype, that generates `N` words of lorem ipsum. Inspired by how PhpStorm does it. Type the trigger with the count baked in, then press `<Tab>`:
+
+| Type | Result |
+| --- | --- |
+| `lorem3` | `Lorem ipsum dolor.` |
+| `lorem10` | `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do.` |
+| `lorem25` | `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis.` |
+
+The count is a regex capture (`lorem(%d+)`), so any number works. Words are taken in order from a fixed six sentence corpus, which repeats if you ask for more words than it holds, and a full stop is appended when the result does not already end in one.
+
+#### JavaScript and TypeScript
+
+`snippets/javascript.json` provides a VSCode style set (`log`, `class`, `iface`, `for`, `forof`, `trycatch`, `prop`, `get`, `set` and others), registered for `javascript`, `javascriptreact`, `typescript`, `typescriptreact`, `vue` and `svelte`.
+
 ### Claude grammar fix
 
 `<leader>gg` writes the buffer to a temp file, pipes it through `claude -p` with a Haiku model, and appends the corrected text below the original rather than replacing it. A spinner renders as virtual text below the last line while the job runs. Requires the `claude` CLI on `PATH`.
