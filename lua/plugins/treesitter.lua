@@ -1,41 +1,79 @@
+-- The main branch is required on Neovim 0.12; master is frozen and crashes on
+-- injections. It enables nothing by default and cannot be lazy-loaded.
 return {
   'nvim-treesitter/nvim-treesitter',
-  build = ':TSUpdate',
+  branch = 'main',
   lazy = false,
+  build = ':TSUpdate',
   config = function()
-    require('nvim-treesitter.configs').setup {
-      ensure_installed = {
-        'haskell',
-        'javascript',
-        'typescript',
-        'c',
-        'cpp',
-        'lua',
-        'vim',
-        'vimdoc',
-        'query',
-      },
-      sync_install = false,
-      auto_install = true,
-      highlight = {
-        enable = true,
-        additional_vim_regex_highlighting = false,
-      },
-      indent = {
-        enable = true,
-      },
+    local ts = require 'nvim-treesitter'
+
+    ts.setup()
+
+    vim.treesitter.language.register('json', 'jsonc')
+
+    -- no auto_install on this branch; already-installed parsers are skipped
+    ts.install {
+      'asm',
+      'bash',
+      'bibtex',
+      'blade',
+      'c',
+      'cpp',
+      'css',
+      'csv',
+      'dockerfile',
+      'git_config',
+      'git_rebase',
+      'gitcommit',
+      'gitignore',
+      'glimmer',
+      'glsl',
+      'go',
+      'haskell',
+      'html',
+      'ini',
+      'java',
+      'javascript',
+      'json',
+      'kotlin',
+      'latex',
+      'lua',
+      'luadoc',
+      'make',
+      'markdown',
+      'markdown_inline',
+      'nginx',
+      'perl',
+      'php',
+      'printf',
+      'python',
+      'query',
+      'requirements',
+      'robots_txt',
+      'rust',
+      'sql',
+      'ssh_config',
+      'svelte',
+      'toml',
+      'tsv',
+      'typescript',
+      'vim',
+      'vimdoc',
+      'vue',
+      'xml',
+      'yaml',
     }
 
-    -- Blade support. The matching highlight/injection queries live in
-    -- after/queries/blade/, which nvim picks up via runtimepath, not from here.
-    local parser_config = require('nvim-treesitter.parsers').get_parser_configs()
-    parser_config.blade = {
-      install_info = {
-        url = 'https://github.com/EmranMR/tree-sitter-blade',
-        files = { 'src/parser.c' },
-        branch = 'main',
-      },
-      filetype = 'blade',
-    }
+    vim.api.nvim_create_autocmd('FileType', {
+      group = vim.api.nvim_create_augroup('UserTreesitter', { clear = true }),
+      callback = function()
+        if not pcall(vim.treesitter.start) then
+          return
+        end
+
+        vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+      end,
+    })
   end,
 }
