@@ -71,6 +71,12 @@ Every file in `lua/plugins/` returns a lazy.nvim spec and is picked up automatic
 | `<leader>p` | Format buffer with conform (3 second timeout) |
 | `<leader>rp` | Format buffer by piping it through `prettier`, bypassing conform |
 
+### Laravel
+
+| Key | Action |
+| --- | --- |
+| `<leader>ih` | Generate the IDE helper files for the Laravel project the current buffer belongs to |
+
 ### Completion and snippets (insert mode)
 
 | Key | Action |
@@ -195,6 +201,12 @@ Because conform itself is lazy, that registry scan is deferred to the first writ
 
 Diagnostic sign icons are set through `vim.diagnostic.config`.
 
+`laravel_lsp` is the odd one out. It is [laravel/lsp](https://github.com/laravel/lsp), installed with `composer global require laravel/lsp` rather than through mason, so `automatic_enable` never sees it and it is enabled by hand. The whole block is wrapped in an `executable()` check, so the config stays inert on a machine that does not have it. Its `root_dir` only resolves when an `artisan` file is found, which keeps it from starting on PHP projects that are not Laravel applications. The command is looked up on `PATH` first and falls back to Composer's global bin directory, which is not on `PATH` by default.
+
+It is framework aware rather than a general PHP server: completion, hover and go to definition for route names, view names, config keys and translation keys, with no diagnostics or rename. Run it alongside a PHP language server such as `phpactor`, not instead of one.
+
+Note that `laravel-ls` in mason and `laravel_ls` in nvim-lspconfig are a different project ([laravel-ls/laravel-ls](https://github.com/laravel-ls/laravel-ls)) and are not used here.
+
 ### Telescope
 
 * Previews of files over 10 KB are truncated with `head`, keeping the preview responsive on large files.
@@ -236,6 +248,30 @@ The count is a regex capture (`lorem(%d+)`), so any number works. Words are take
 
 `snippets/javascript.json` provides a VSCode style set (`log`, `class`, `iface`, `for`, `forof`, `trycatch`, `prop`, `get`, `set` and others), registered for `javascript`, `javascriptreact`, `typescript`, `typescriptreact`, `vue` and `svelte`.
 
+### Laravel IDE helper generation
+
+`<leader>ih` regenerates the [barryvdh/laravel-ide-helper](https://github.com/barryvdh/laravel-ide-helper) files for the Laravel project the current buffer belongs to, streaming progress into a floating window so failures are visible while they happen.
+
+It runs three commands in sequence:
+
+| Step | Command | Writes |
+| --- | --- | --- |
+| generate | `ide-helper:generate` | `_ide_helper.php` |
+| models | `ide-helper:models --nowrite` | `_ide_helper_models.php` |
+| meta | `ide-helper:meta` | `.phpstorm.meta.php` |
+
+`--nowrite` is the important flag. Without it, `ide-helper:models` writes `@property` docblocks directly into the model classes; with it, everything lands in `_ide_helper_models.php` and no existing PHP file is touched. Every step also gets `--no-interaction`, because a prompt would hang a job that has no terminal attached.
+
+Three things happen before any command runs:
+
+1. The project root is located with `vim.fs.root(0, 'artisan')`. Without one, the keymap warns and does nothing.
+2. The runner is chosen. If `vendor/bin/sail` exists the commands go through Sail, otherwise through `php` directly. This matters because `ide-helper:models` needs a working database connection, and a containerised database is usually only reachable from inside the container. The chosen runner is printed in the window.
+3. `vendor/barryvdh/laravel-ide-helper` is checked. If the package is missing, the window shows the install command matching the chosen runner, and `y` copies it to the clipboard.
+
+`q` or `<Esc>` closes the window. The generated files are derived artifacts and belong in the project's `.gitignore`.
+
+Why this is worth having: a general PHP language server cannot know an Eloquent model's columns, because they come from the database schema. `_ide_helper_models.php` supplies them as `@property` docblocks, which is what makes `$model->column` complete. It only helps where the variable's type is actually known, so a value coming from something typed loosely (`auth()->user()`, for instance) stays uncompletable until the call site is annotated.
+
 ### Claude grammar fix
 
 `<leader>gg` writes the buffer to a temp file, pipes it through `claude -p` with a Haiku model, and appends the corrected text below the original rather than replacing it. A spinner renders as virtual text below the last line while the job runs. Requires the `claude` CLI on `PATH`.
@@ -252,3 +288,12 @@ The count is a regex capture (`lorem(%d+)`), so any number works. Words are take
 | `:checkhealth` | Diagnose a broken setup |
 
 External tools expected on `PATH`: `git`, `rg`, `curl`, `tar`, a C compiler, `tree-sitter` (0.26.1+, installed via a package manager rather than npm), and `claude` for the grammar keymap.
+
+Not managed by this config, and needed only for PHP work:
+
+| Tool | Install | Used by |
+| --- | --- | --- |
+| `laravel-lsp` | `composer global require laravel/lsp` | The `laravel_lsp` language server |
+| `barryvdh/laravel-ide-helper` | `composer require --dev barryvdh/laravel-ide-helper`, per project | `<leader>ih` |
+
+Composer's global bin directory (`~/.composer/vendor/bin`) does not need to be on `PATH`; the config falls back to it.
