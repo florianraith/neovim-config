@@ -9,12 +9,15 @@ return {
     config = function()
       vim.cmd [[colorscheme rose-pine]]
 
-      -- Clears the background color so that the terminal background shows through
+      -- Drop only the background so the terminal shows through; nvim_set_hl
+      -- replaces rather than merges, so the rest is carried over by hand.
+      -- Floats are transparent too; winborder is what separates them.
       local function clear_background()
-        vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
-        vim.api.nvim_set_hl(0, 'NormalNC', { bg = 'none' })
-        vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none' })
-        vim.api.nvim_set_hl(0, 'EndOfBuffer', { bg = 'none' })
+        for _, group in ipairs { 'Normal', 'NormalNC', 'EndOfBuffer', 'SignColumn', 'NormalFloat', 'FloatBorder' } do
+          local hl = vim.api.nvim_get_hl(0, { name = group, link = false })
+          hl.bg, hl.ctermbg = nil, nil
+          vim.api.nvim_set_hl(0, group, hl)
+        end
       end
 
       clear_background()
@@ -23,8 +26,6 @@ return {
         group = 'TransparentBg',
         callback = clear_background,
       })
-
-      vim.api.nvim_set_hl(0, 'SignColumn', { bg = 'none' })
     end,
   },
 

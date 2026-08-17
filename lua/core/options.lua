@@ -22,3 +22,4 @@ vim.opt.cursorline = true -- highlight current line
 vim.opt.splitright = true -- open new split to the right
 vim.opt.splitbelow = true -- open new split below
 vim.opt.signcolumn = 'yes' -- always show sign column
+vim.opt.winborder = 'single' -- default border for floating windows
