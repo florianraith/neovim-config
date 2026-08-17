@@ -1,6 +1,6 @@
 return {
   'nvim-telescope/telescope.nvim',
-  tag = '0.1.8',
+  tag = 'v0.2.2',
   cmd = 'Telescope',
   dependencies = {
     'nvim-lua/plenary.nvim',
@@ -54,15 +54,6 @@ return {
   config = function()
     local previewers = require 'telescope.previewers'
     local previewers_utils = require 'telescope.previewers.utils'
-
-    -- telescope 0.1.8 calls nvim-treesitter.parsers.ft_to_lang(), gone on the main branch
-    previewers_utils.ts_highlighter = function(bufnr, ft)
-      local lang = vim.treesitter.language.get_lang(ft)
-      if not lang then
-        return false
-      end
-      return (pcall(vim.treesitter.start, bufnr, lang))
-    end
 
     local max_size = 10000
     local truncate_large_files = function(filepath, bufnr, opts)

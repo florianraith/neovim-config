@@ -5,19 +5,19 @@ return {
   -- mason.setup runs on load rather than from a consumer's config, because
   -- conform.nvim also reads the mason registry and either may load first.
   {
-    'williamboman/mason.nvim',
+    'mason-org/mason.nvim',
     cmd = { 'Mason', 'MasonInstall', 'MasonUninstall', 'MasonUninstallAll', 'MasonLog', 'MasonUpdate' },
     opts = {},
   },
 
-  { 'williamboman/mason-lspconfig.nvim', lazy = true },
+  { 'mason-org/mason-lspconfig.nvim', lazy = true },
 
   {
     'neovim/nvim-lspconfig',
     event = { 'BufReadPre', 'BufNewFile' },
     dependencies = {
-      'williamboman/mason.nvim',
-      'williamboman/mason-lspconfig.nvim',
+      'mason-org/mason.nvim',
+      'mason-org/mason-lspconfig.nvim',
     },
     config = function()
       vim.diagnostic.config {
