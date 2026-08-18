@@ -67,7 +67,9 @@ Every file in `lua/plugins/` returns a lazy.nvim spec and is picked up automatic
 
 | Key | Action |
 | --- | --- |
-| `<leader>l` | Toggle neo-tree at the current working directory |
+| `<leader>l` | Toggle neo-tree at the current working directory, revealing the current buffer's file |
+| `Y` (in neo-tree) | Copy the hovered file or folder path relative to the git root, falling back to the current working directory when there is no git root |
+| `gy` (in neo-tree) | Copy the absolute path of the hovered file or folder |
 | `<leader>p` | Format buffer with conform (3 second timeout) |
 | `<leader>rp` | Format buffer by piping it through `prettier`, bypassing conform |
 
@@ -212,6 +214,12 @@ Note that `laravel-ls` in mason and `laravel_ls` in nvim-lspconfig are a differe
 * Previews of files over 10 KB are truncated with `head`, keeping the preview responsive on large files.
 * `find_files` includes hidden files.
 * ripgrep runs with `-L` so symlinks are followed, and `--smart-case`.
+
+### neo-tree
+
+`filesystem.follow_current_file` is enabled, so while the tree is open it jumps to the file of whatever buffer you switch to and expands the parent folders on the way. With `leave_dirs_open = false`, folders that were auto expanded for a previous file collapse again, so the tree does not accumulate open directories as you move around.
+
+The `<leader>l` toggle passes `reveal = true`, which does the same thing for the moment the tree opens (`follow_current_file` only reacts to buffer changes while it is already open). A buffer outside the current working directory makes neo-tree ask whether to change the root.
 
 ### Colorscheme transparency
 
