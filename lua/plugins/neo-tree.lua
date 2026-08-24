@@ -16,6 +16,18 @@ return {
     },
     window = {
       mappings = {
+        ['<leader>z'] = function(state)
+          local node = state.tree:get_node()
+          local from = state.current_position or 'left'
+          local cmd = require 'neo-tree.command'
+          cmd.execute { action = 'close', position = from }
+          cmd.execute {
+            action = 'focus',
+            position = from == 'current' and 'left' or 'current',
+            dir = vim.uv.cwd(),
+            reveal_file = node and node.type == 'file' and node.path or nil,
+          }
+        end,
         ['Y'] = function(state)
           local node = state.tree:get_node()
           local root = vim.fs.root(node.path, '.git')
@@ -40,7 +52,11 @@ return {
     {
       '<leader>l',
       function()
-        require('neo-tree.command').execute { toggle = true, reveal = true, dir = vim.uv.cwd() }
+        if vim.b.neo_tree_position == 'current' then
+          require('neo-tree.command').execute { action = 'close', position = 'current' }
+        else
+          require('neo-tree.command').execute { toggle = true, reveal = true, dir = vim.uv.cwd() }
+        end
       end,
       desc = 'Toggle neo-tree',
     },

@@ -70,6 +70,7 @@ Every file in `lua/plugins/` returns a lazy.nvim spec and is picked up automatic
 | `<leader>l` | Toggle neo-tree at the current working directory, revealing the current buffer's file |
 | `Y` (in neo-tree) | Copy the hovered file or folder path relative to the git root, falling back to the current working directory when there is no git root |
 | `gy` (in neo-tree) | Copy the absolute path of the hovered file or folder |
+| `<leader>z` (in neo-tree) | Toggle the tree between the sidebar and a full window view |
 | `<leader>p` | Format buffer with conform (3 second timeout) |
 | `<leader>rp` | Format buffer by piping it through `prettier`, bypassing conform |
 
@@ -218,6 +219,8 @@ Note that `laravel-ls` in mason and `laravel_ls` in nvim-lspconfig are a differe
 ### neo-tree
 
 `filesystem.follow_current_file` is enabled, so while the tree is open it jumps to the file of whatever buffer you switch to and expands the parent folders on the way. With `leave_dirs_open = false`, folders that were auto expanded for a previous file collapse again, so the tree does not accumulate open directories as you move around.
+
+`<leader>z` inside the tree closes it and reopens it at the other position, switching between `left` (the sidebar) and `current` (the tree takes over the whole window, like a zoomed tmux pane). The file under the cursor is passed along as `reveal_file` so the cursor lands in the same place, and closing a `current` position tree restores the buffer that was in the window before. `<leader>l` also closes a full window tree instead of opening a second one beside it.
 
 The `<leader>l` toggle passes `reveal = true`, which does the same thing for the moment the tree opens (`follow_current_file` only reacts to buffer changes while it is already open). A buffer outside the current working directory makes neo-tree ask whether to change the root.
 
